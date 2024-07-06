@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { FaAlignJustify } from "react-icons/fa6";
 import { useState } from 'react';
+import { UserButton } from '@clerk/nextjs';
 
 
 function Header() {
@@ -22,8 +23,8 @@ function Header() {
               alt='logo'
               />
 
-
-              {/* HAMBURGER BUTTON FOR MOBILE */}
+              {/* Mobile Screen Logo */}
+              
               <div className="md:hidden">
                 <button
                   className="p-2 text-gray-700 rounded-md outline-none focus:border-gray-400 focus:border delay-100 ease-out"
@@ -54,25 +55,30 @@ function Header() {
             >
               <ul className="h-screen md:h-16 md:flex items-center justify-center">
                 <li className="text-xl font-semibold text-black md:py-2 py-4 md:px-6 text-center border-b hover:text-slate-700 hover:font-extrabold md:border-b-0  hover:bg-purple-400  border-slate-600  md:hover:text-slate-700 md:hover:font-bold md:hover:bg-transparent">
-                  <Link href="#about" onClick={() => setNavbar(!navbar)}>
+                  <Link href="/dashboard" onClick={() => setNavbar(!navbar)}>
                     Dashboard
                   </Link>
                 </li>
                 <li className="text-xl font-semibold text-black md:py-2 py-4 md:px-6 text-center border-b hover:text-slate-700 hover:font-extrabold md:border-b-0  hover:bg-purple-400  border-slate-600  md:hover:text-slate-700 md:hover:font-bold md:hover:bg-transparent">
-                  <Link href="#blog" onClick={() => setNavbar(!navbar)}>
+                  <Link href="/dashboard/questions" onClick={() => setNavbar(!navbar)}>
                     Questions
                   </Link>
                 </li>
                 <li className="text-xl font-semibold text-black md:py-2 py-4 md:px-6 text-center border-b hover:text-slate-700 hover:font-extrabold md:border-b-0  hover:bg-purple-400  border-slate-600  md:hover:text-slate-700 md:hover:font-bold md:hover:bg-transparent">
-                  <Link href="#contact" onClick={() => setNavbar(!navbar)}>
+                  <Link href="/dashboard/upgrade" onClick={() => setNavbar(!navbar)}>
                     Upgrade
                   </Link>
                 </li>
                 <li className="text-xl font-semibold text-black md:py-2 py-4 md:px-6 text-center border-b hover:text-slate-700 hover:font-extrabold md:border-b-0  hover:bg-purple-400  border-slate-600  md:hover:text-slate-700 md:hover:font-bold md:hover:bg-transparent">
-                  <Link href="#projects" onClick={() => setNavbar(!navbar)}>
+                  <Link href="/dashboard/how" onClick={() => setNavbar(!navbar)}>
                     How it works?
                   </Link>
                 </li>
+                <UserButton 
+                height = {50}
+                width ={ 50}
+                className = "border-2 border-white"
+                />
               </ul>
             </div>
           </div>

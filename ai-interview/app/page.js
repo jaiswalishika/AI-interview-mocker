@@ -1,8 +1,10 @@
-import Image from "next/image";
-import App from "./App";
+import React from "react";
+import { SignUp } from "@clerk/nextjs";
 
 export default function Home() {
   return (
-    <App />
+    <h1>
+    Hello
+    </h1>
   );
 }
