@@ -1,7 +1,8 @@
 import Image from "next/image";
+import App from "./App";
 
 export default function Home() {
   return (
-    <h1>Hello</h1>
+    <App />
   );
 }
