@@ -62,16 +62,11 @@ const Interview = ({ params }) => {
             </>
           }
         </div>
-
-
-
       </div>
 
-      <Button className="hover:rounded-lg hover:bg-violet-800 w-[30%] font-medium">
+      <Button className="hover:rounded-lg hover:bg-purple-900 w-[30%] font-medium">
         Start Interview
       </Button>
-
-
     </div>
 
   )
