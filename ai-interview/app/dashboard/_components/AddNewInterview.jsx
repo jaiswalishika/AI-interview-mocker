@@ -1,51 +1,54 @@
 "use client"
+
 import React, { useState } from 'react'
-import { Input } from '@/components/ui/input'
+
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { Textarea } from '@/components/ui/textarea'
-import { chatSession } from '@/utils/GeminiAIModal'
-import { LoaderCircle } from 'lucide-react'
-import { db } from '@/utils/db'
-import { MockInterview } from '@/utils/schema'
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+import { LoaderCircle, TrendingUpIcon } from 'lucide-react';
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea"
+import { chatSession } from '@/utils/GeminiAIModal';
+import { db } from '@/utils/db';
+import { MockInterview } from '@/utils/schema';
 import { v4 as uuidv4 } from 'uuid';
-import { useUser } from '@clerk/nextjs'
-import moment from 'moment'
+import { useUser } from '@clerk/nextjs';
+import moment from 'moment';
+import { useRouter } from 'next/navigation';
+
 
 
 
 const AddNewInterview = () => {
 
-  const [openDialog, setOpenDialog] = useState(false)
+  const [openDailog, setOpenDailog] = useState(false);
   const [jobPosition, setJobPosition] = useState();
   const [jobDesc, setJobDesc] = useState();
-  const [jobExp, setJobExp] = useState();
+  const [jobExperience, setJobExperience] = useState();
   const [loading, setLoading] = useState(false);
   const [jsonResponse, setJsonResponse] = useState([]);
+  const router = useRouter();
   const { user } = useUser();
 
   const onSubmit = async (e) => {
-
-    setLoading(true)
-
-    e.preventDefault()
-
-    console.log(jobPosition, jobDesc, jobExp);
-
-    const InputPromt = "Job Position: " + jobPosition + ", Job Description: " + jobDesc + " , Job Experience:" + jobExp + ", depending upon the Job Position,Description and Experience give us " + process.env.NEXT_PUBLIC_INTERVIEW_QUESTIONS_COUNT + " questions and answers for interview in json format";
-
+    setLoading(true);
+    e.preventDefault();
+    console.log(jobPosition, jobExperience, jobDesc);
+    const InputPromt = "Job Position :" + jobPosition + ", job Description:" + jobDesc + ", Years of Experience :" + jobExperience + ", Depends on this information please give us " + process.env.NEXT_PUBLIC_QUESTION_COUNT + " interview questions with answer in JSON Format ,Give Question and answer as field in JSON"
     const result = await chatSession.sendMessage(InputPromt);
-    const MockJsonResp = (result.response.text()).replace('```json', '').replace('```json', '')
-    console.log(MockJsonResp);
-    console.log(JSON.parse(MockJsonResp));
+    const MockJsonResp = (result.response.text()).replace('```json', '').replace('```', '');
+    //console.log(await JSON.parse(MockJsonResp));
+
     setJsonResponse(MockJsonResp);
+
 
     if (MockJsonResp) {
 
@@ -54,75 +57,94 @@ const AddNewInterview = () => {
         jsonMockResp: MockJsonResp,
         jobPosition: jobPosition,
         jobDesc: jobDesc,
-        jobExperience: jobExp,
+        jobExperience: jobExperience,
         createdBy: user?.primaryEmailAddress?.emailAddress,
-        createdAt: moment().format('DD-MM-YYYY')
-      }).returning({ mockId: MockInterview.mockId });
+        createdAt: moment().format('DD/MM/yyyy')
+      }).returning({ mockId: MockInterview.mockId })
 
-      console.log("Inserted ID", resp)
-    }
-    else {
-      console.log("ERROR");
+      console.log('Inserted Id:', resp);
+
+      if (resp) {
+        setOpenDailog(false);
+        router.push('/dashboard/interview/' + resp[0]?.mockId);
+      }
+    } else {
+      console.log('Error');
     }
 
     setLoading(false);
-
   }
-
-
   return (
     <div>
       <div className='p-10 border rounded-lg bg-secondary hover:scale-105 hover:shadow-md cursor-pointer transition-all'
-        onClick={() => setOpenDialog(true)}
-      >
-        <h2 className='font-bold text-lg'>+ Add New</h2>
+        onClick={() => setOpenDailog(TrendingUpIcon)}>
+        <h2 className=' text-lg text-center'>+ Add New</h2>
       </div>
-      <Dialog open={openDialog}>
+      <AlertDialog open={openDailog}>
 
-        <DialogContent className="bg-slate-100 max-w-[600px]">
-          <DialogHeader>
-            <DialogTitle className="text-2xl flex justify-start ">Tell us more about your job interview</DialogTitle>
-            <DialogDescription>
-
+        <AlertDialogContent className='max-w-2xl'>
+          <AlertDialogHeader>
+            <AlertDialogTitle className='text-xl'>Tell us more about your job interview</AlertDialogTitle>
+            <AlertDialogDescription>
               <form onSubmit={onSubmit}>
-                <div className='text-black'>
 
-                  <h2>Add Details about you job position/role, Job description and years of experience.</h2>
+                <div>
+                  <h2>Add Details about your job position/role,Job Description and years of experience</h2>
+                  <div className='mt-7 mx-3'>
+                    <label className='text-gray-900 mx-1'>Job Role/Job Position</label>
+                    <Input placeholder='Full Stack Developer' className='mt-1' required
+                      onChange={(event) => setJobPosition(event.target.value)}
+                    />
+                  </div>
 
-                  <div className='mt-7 my-2 gap-2 flex flex-col items-start'>
-                    <label className='text-black font-semibold py-2'>Job Role/Job Position</label>
-                    <Input className="border-black" placeholder="Ex. Full Satck Developer" required
-                      onChange={(event) => setJobPosition(event.target.value)} />
+                  <div className='mt-4 mx-3'>
+                    <label className='text-gray-900 mx-1'>Job Description/Tech Stack</label>
+                    <Textarea placeholder='Ex-React,Nodejs,Javascript,MongoDb,Nextjs etc' className='mt-1' required
+                      onChange={(event) => setJobDesc(event.target.value)}
+                    />
                   </div>
-                  <div className='my-2 gap-2 flex flex-col items-start'>
-                    <label className='text-black font-semibold py-2'>Job Description/Tech Stack (In Short)</label>
-                    <Textarea className="border-black" placeholder="Ex. React , Angular , Node , MySQL etc." required onChange={(event) => setJobDesc(event.target.value)} />
+
+                  <div className='mt-4 mx-3'>
+                    <label className='text-gray-900 mx-1'>Years of Experience</label>
+                    <Input placeholder='5' type="number" className='mt-1' max='40' required
+                      onChange={(event) => setJobExperience(event.target.value)}
+                    />
                   </div>
-                  <div className='gap-2 flex flex-col items-start'>
-                    <label className='text-black font-semibold py-2'>Years Of Experience</label>
-                    <Input className="border-black" placeholder="Ex. 2" type="number" required onChange={(event) => setJobExp(event.target.value)} />
+
+                  <div className='mt-4 mx-3'>
+                    <label className='text-gray-900 mx-1'>Upload Resume</label>
+                    <Input placeholder='5' type="file" className='mt-1' />
                   </div>
-                </div>
-                <div className='flex gap-5 justify-end pt-5'>
-                  <Button variant="ghost" onClick={() => setOpenDialog(false)} className="text-black" type="button" >
-                    Cancel
-                  </Button>
-                  <Button type="Submit" disable={loading}>
-                    {loading ?
-                      <>
-                        <LoaderCircle className='animate-spin' />Generating from AI
-                      </>
-                      : 'Start Interview'
-                    }
-                  </Button>
+
+                  <div className='flex gap-5 justify-end'>
+                    <AlertDialogFooter className='mt-3'>
+                      <AlertDialogCancel type='button' className='bg-red-600 text-white' onClick={() => setOpenDailog(false)}>Cancel</AlertDialogCancel>
+                      <AlertDialogAction type='submit' disabled={loading} className=' bg-slate-700'>
+                        {loading ?
+                          <>
+                            <LoaderCircle className='animate-spin ' />'Generating from AI' </>
+                          : 'Start Interview'}
+                      </AlertDialogAction>
+
+                    </AlertDialogFooter>
+
+                  </div>
+
                 </div>
               </form>
-            </DialogDescription>
-          </DialogHeader>
-        </DialogContent>
-      </Dialog>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+
+
+
+        </AlertDialogContent>
+      </AlertDialog>
+
+
 
     </div>
+
+
   )
 }
 

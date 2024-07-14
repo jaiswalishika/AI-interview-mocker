@@ -19,11 +19,17 @@ const {
     responseMimeType: "text/plain",
   };
   
-  
+  const safetySettings = [
+    {
+      category: 'HARM_CATEGORY_HATE_SPEECH', // or one of the other allowed values
+    },
+  ];
+
     export const chatSession = model.startChat({
       generationConfig,
-   // safetySettings: Adjust safety settings
-   // See https://ai.google.dev/gemini-api/docs/safety-settings
+      safetySettings
     });
+  
+
   
   
