@@ -1,5 +1,6 @@
 "use client"
 import { Button } from '@/components/ui/button'
+import Link from 'next/link'
 import { db } from '@/utils/db'
 import { MockInterview } from '@/utils/schema'
 import { eq } from 'drizzle-orm'
@@ -64,9 +65,14 @@ const Interview = ({ params }) => {
         </div>
       </div>
 
-      <Button className="hover:rounded-lg hover:bg-purple-900 w-[30%] font-medium">
+   <div className='my-5 w-[30%] flex items-center justify-center rounded-lg'>
+   <Link href={'/dashboard/interview/'+params.interviewId+'/start'}>
+      <Button className="hover:rounded-lg hover:bg-purple-900 font-medium">
         Start Interview
       </Button>
+    </Link>
+   </div>
+    
     </div>
 
   )
