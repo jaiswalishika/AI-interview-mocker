@@ -1,12 +1,11 @@
-
 import React from 'react'
 
 import planData from '@/utils/planData'
-import PlanItemCard from './components/PlanItemCard'
+import PlanItemCard from './_components/PlanItemCard'
 
-const page = () => {
-  return (
-    <div className='p-10'>
+function Upgrade() {
+    return (
+        <div className='p-10'>
             <h2 className='font-bold text-3xl text-center'>Upgrade</h2>
             <h2 className='text-center  text-gray-500'>Upgrade to monthly plan to access unlimited mock interview</h2>
 
@@ -22,7 +21,7 @@ const page = () => {
                 </div>
             </div>
         </div>
-  )
+    )
 }
 
-export default page
+export default Upgrade

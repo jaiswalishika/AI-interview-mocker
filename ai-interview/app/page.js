@@ -1,6 +1,7 @@
 
 import Header from "./dashboard/_components/Header";
 import { AtomIcon, Edit, Share2 } from "lucide-react";
+import Image from "next/image";
 
 
 
@@ -8,7 +9,8 @@ import { AtomIcon, Edit, Share2 } from "lucide-react";
 export default function Home() {
   return (
     <div>
-
+      <Image src={'/grid.svg'} className="absolute z-[-10] w-full" 
+      width={1200} height={300} />
       <Header />
 
       <section className=" z-50">
